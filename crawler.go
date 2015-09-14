@@ -7,7 +7,8 @@ import (
 	"net/http/cookiejar"
 	"strings"
 
-	"github.com/rogpeppe/go-charset/charset"
+	"golang.org/x/text/transform"
+	"golang.org/x/text/encoding/charmap"
 	"github.com/advancedlogic/goquery"
 )
 
@@ -61,14 +62,17 @@ func (this Crawler) Crawl() *Article {
 			cs = strings.ToLower(cs)
 
 			if cs != "utf-8" {
-				r, err := charset.NewReader(cs, strings.NewReader(this.rawHtml))
-				if err != nil {
-					// On error, skip the read
+				
+				sr := strings.NewReader(this.rawHtml)
+				tr := transform.NewReader(sr, charmap.Windows1251.NewDecoder())
+				utf8, err := ioutil.ReadAll(tr)
+				if err != err {
+					// обработка ошибки
 					this.rawHtml = ""
 				} else {
-					utf8, _ := ioutil.ReadAll(r)
 					this.rawHtml = string(utf8)
-				}
+				}				
+				
 				reader = strings.NewReader(this.rawHtml)
 				document, err = goquery.NewDocumentFromReader(reader)
 			}
