@@ -2,7 +2,7 @@ package goose
 
 import (
 	"container/list"
-	"github.com/advancedlogic/goquery"
+	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 	"log"
@@ -11,10 +11,10 @@ import (
 )
 
 type cleaner struct {
-	config configuration
+	config Configuration
 }
 
-func NewCleaner(config configuration) cleaner {
+func NewCleaner(config Configuration) cleaner {
 	return cleaner{
 		config: config,
 	}
@@ -38,6 +38,9 @@ var REMOVENODES_RE = regexp.MustCompile("" +
 	"author-dropdown|" +
 	"blog-pager|" +
 	"breadcrumbs|" +
+	"breaking|" +
+	"box-right|" +
+	"box-left|" +
 	"byline|" +
 	"cabecalho|" +
 	"cnnStryHghLght|" +
@@ -73,16 +76,21 @@ var REMOVENODES_RE = regexp.MustCompile("" +
 	"post-attributes|" +
 	"post-title|" +
 	"relacionado|" +
+	"related|" +
 	"retweet|" +
 	"runaroundLeft|" +
 	"shoutbox|" +
 	"site_nav|" +
+	"share-|" +
+	"slide|" +
 	"socialNetworking|" +
 	"social_|" +
+	"social-|" +
 	"socialnetworking|" +
 	"socialtools|" +
 	"sponsor|" +
 	"sub_nav|" +
+	"nav|" +
 	"subscribe|" +
 	"tag_|" +
 	"tags|" +
@@ -91,6 +99,7 @@ var REMOVENODES_RE = regexp.MustCompile("" +
 	"tools|" +
 	"vcard|" +
 	"welcome_form|" +
+	"widget|" +
 	"wp-caption-text")
 var CAPTIONS_RE = regexp.MustCompile("^caption$")
 var GOOGLE_RE = regexp.MustCompile(" google ")
@@ -347,8 +356,8 @@ func (this *cleaner) convertDivsToParagraphs(doc *goquery.Document, domType stri
 			this.replaceWithPara(div)
 			badDivs++
 		} else {
-			replacementText := make([]string, 0)
-			nodesToRemove := list.New()
+			//replacementText := make([]string, 0)
+			//nodesToRemove := list.New()
 			children := div.Contents()
 			if this.config.debug {
 				log.Printf("Found %d children of div\n", children.Size())
@@ -367,21 +376,22 @@ func (this *cleaner) convertDivsToParagraphs(doc *goquery.Document, domType stri
 						return true
 					}
 					if len(text) > 1 {
-						prev := kidNode.PrevSibling
-						if this.config.debug {
-							log.Printf("PARENT CLASS: %s NODENAME: %s\n", this.config.parser.name("class", div), tag)
-							log.Printf("TEXTREPLACE: %s\n", strings.Replace(text, "\n", "", -1))
-						}
-						if prev != nil && prev.DataAtom == atom.A {
-							nodeSelection := kid.HasNodes(prev)
-							html, _ := nodeSelection.Html()
-							replacementText = append(replacementText, html)
-							if this.config.debug {
-								log.Printf("SIBLING NODENAME ADDITION: %s TEXT: %s\n", prev.Data, html)
-							}
-						}
-						replacementText = append(replacementText, text)
-						nodesToRemove.PushBack(kidNode)
+//						prev := kidNode.PrevSibling
+//						if this.config.debug {
+//							log.Printf("PARENT CLASS: %s NODENAME: %s\n", this.config.parser.name("class", div), tag)
+//							log.Printf("TEXTREPLACE: %s\n", strings.Replace(text, "\n", "", -1))
+//						}
+//						if prev != nil && prev.DataAtom == atom.A {
+//							nodeSelection := kid.HasNodes(prev)
+//							html, _ := nodeSelection.Html()
+//							replacementText = append(replacementText, html)
+//							if this.config.debug {
+//								log.Printf("SIBLING NODENAME ADDITION: %s TEXT: %s\n", prev.Data, html)
+//							}
+//						}
+//						replacementText = append(replacementText, text)
+//						nodesToRemove.PushBack(kidNode)
+						kidNode.Data = text
 						convertedTextNodes++
 					}
 
@@ -389,18 +399,19 @@ func (this *cleaner) convertDivsToParagraphs(doc *goquery.Document, domType stri
 				return true
 			})
 
-			newNode := new(html.Node)
-			newNode.Type = html.ElementNode
-			newNode.Data = strings.Join(replacementText, "")
-			newNode.DataAtom = atom.P
-			div.First().AddNodes(newNode)
-
-			for s := nodesToRemove.Front(); s != nil; s = s.Next() {
-				node := s.Value.(*html.Node)
-				if node != nil && node.Parent != nil {
-					node.Parent.RemoveChild(node)
-				}
-			}
+//			newNode := new(html.Node)
+//			newNode.Type = html.ElementNode
+//			newNode.Data = strings.Join(replacementText, "")
+//			newNode.DataAtom = atom.P
+//			//println("--------- new node text\n")
+//			div.First().AddNodes(newNode)
+//
+//			for s := nodesToRemove.Front(); s != nil; s = s.Next() {
+//				node := s.Value.(*html.Node)
+//				if node != nil && node.Parent != nil {
+//					node.Parent.RemoveChild(node)
+//				}
+//			}
 		}
 	})
 	if this.config.debug {

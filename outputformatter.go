@@ -1,7 +1,7 @@
 package goose
 
 import (
-	"github.com/advancedlogic/goquery"
+	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/net/html"
 	"regexp"
 	"strconv"
@@ -13,7 +13,7 @@ var normalizeNl = regexp.MustCompile(`[\n]+`)
 
 type outputFormatter struct {
 	topNode  *goquery.Selection
-	config   configuration
+	config Configuration
 	language string
 }
 
@@ -48,6 +48,12 @@ func (this *outputFormatter) convertToText() string {
 	selections := this.topNode
 	selections.Each(func(i int, s *goquery.Selection) {
 		txt := s.Text()
+//		if s.Is("h1") || s.Is("h2") || s.Is("h3") {
+//			txt = strings.Trim(txt, " ") + ".\n";
+//			txts = append(txts, txt)
+//			println("------ h1 replacement ----")
+//			return
+//		}
 		if txt != "" {
 			txt = txt //unescape
 			txtLis := strings.Trim(txt, "\n")
@@ -132,6 +138,15 @@ func (this *outputFormatter) replaceTagsWithText() {
 		node := italic.Get(0)
 		node.Type = html.TextNode
 		node.Data = text
+	})
+
+	headers := this.topNode.Find("h1,h2,h3")
+	headers.Each(func (i int, h1 *goquery.Selection) {
+		text := h1.Text() + ". "
+		node := h1.Get(0)
+		node.Type = html.TextNode
+		node.Data = text
+		//println("------ h1 replacement -------")
 	})
 }
 

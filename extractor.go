@@ -2,7 +2,7 @@ package goose
 
 import (
 	"container/list"
-	"github.com/advancedlogic/goquery"
+	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 	"gopkg.in/fatih/set.v0"
@@ -29,10 +29,10 @@ var A_HREF_TAG_SELECTOR = [...]string{"/tag/", "/tags/", "/topic/", "?keyword"}
 var RE_LANG = "^[A-Za-z]{2}$"
 
 type contentExtractor struct {
-	config configuration
+	config Configuration
 }
 
-func NewExtractor(config configuration) contentExtractor {
+func NewExtractor(config Configuration) contentExtractor {
 	return contentExtractor{
 		config: config,
 	}
@@ -50,7 +50,7 @@ func (this *contentExtractor) getTitle(article *Article) string {
 			return title
 		}
 	}
-	titleElement := doc.Find("title,post-title,headline")
+	titleElement := doc.Find("title,post-title,headline,article-title")
 	if titleElement == nil || titleElement.Size() == 0 {
 		return title
 	}
@@ -623,10 +623,13 @@ func (this *contentExtractor) postCleanup(targetNode *goquery.Selection) *goquer
 	if this.config.debug {
 		log.Println("Starting cleanup Node")
 	}
+	//println(targetNode.Text())
 	node := this.addSiblings(targetNode)
 	children := node.Children()
 	children.Each(func(i int, s *goquery.Selection) {
 		tag := s.Get(0).DataAtom.String()
+		//println("cleanup tag " + tag)
+		//println(s.Text())
 		if tag != "p" {
 			if this.config.debug {
 				log.Printf("CLEANUP  NODE: %s class: %s\n", this.config.parser.name("id", s), this.config.parser.name("class", s))
@@ -646,6 +649,8 @@ func (this *contentExtractor) postCleanup(targetNode *goquery.Selection) *goquer
 
 			subParagraph2 := s.Find("p")
 			if subParagraph2.Length() == 0 && tag != "td" {
+				//println("remove empty node")
+				//println(s.Text())
 				if this.config.debug {
 					log.Println("Removing node because it doesn't have any paragraphs")
 				}

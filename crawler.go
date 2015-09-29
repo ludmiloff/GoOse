@@ -9,17 +9,17 @@ import (
 
 	"golang.org/x/text/transform"
 	"golang.org/x/text/encoding/charmap"
-	"github.com/advancedlogic/goquery"
+	"github.com/PuerkitoBio/goquery"
 )
 
 type Crawler struct {
-	config  configuration
+	config Configuration
 	url     string
 	rawHtml string
 	helper  Helper
 }
 
-func NewCrawler(config configuration, url string, rawHtml string) Crawler {
+func NewCrawler(config Configuration, url string, rawHtml string) Crawler {
 	return Crawler{
 		config:  config,
 		url:     url,
@@ -27,21 +27,21 @@ func NewCrawler(config configuration, url string, rawHtml string) Crawler {
 	}
 }
 
-func (this Crawler) Crawl() *Article {
+func (this Crawler) Crawl() (*Article, error) {
 
 	article := new(Article)
 	this.assignParseCandidate()
 	this.assignHtml()
 
 	if this.rawHtml == "" {
-		return article
+		return article, nil
 	}
 
 	reader := strings.NewReader(this.rawHtml)
 	document, err := goquery.NewDocumentFromReader(reader)
 
 	if err != nil {
-		panic(err.Error())
+		return article, err
 	}
 
 	attr := ""
@@ -67,7 +67,7 @@ func (this Crawler) Crawl() *Article {
 				tr := transform.NewReader(sr, charmap.Windows1251.NewDecoder())
 				utf8, err := ioutil.ReadAll(tr)
 				if err != err {
-					// обработка ошибки
+					// обработка на грешките
 					this.rawHtml = ""
 				} else {
 					this.rawHtml = string(utf8)
@@ -120,9 +120,9 @@ func (this Crawler) Crawl() *Article {
 		article.Delta = delta
 
 	} else {
-		panic(err.Error())
+		return article, err
 	}
-	return article
+	return article, err
 }
 
 func (this *Crawler) assignParseCandidate() {

@@ -1,7 +1,7 @@
 package goose
 
 import (
-	"github.com/advancedlogic/goquery"
+	"github.com/PuerkitoBio/goquery"
 	"gopkg.in/fatih/set.v0"
 	"strconv"
 	"strings"
@@ -9,7 +9,7 @@ import (
 
 type VideoExtractor struct {
 	article    *Article
-	config     configuration
+	config Configuration
 	candidates *set.Set
 	movies     *set.Set
 }
