@@ -66,6 +66,7 @@ var REMOVENODES_RE = regexp.MustCompile("" +
 	"[Kk]ona[Ff]ilter|" +
 	"leading|" +
 	"legende|" +
+	"legend|" +
 	"links|" +
 	"mediaarticlerelated|" +
 	"menucontainer|" +
