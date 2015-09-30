@@ -100,6 +100,14 @@ var REMOVENODES_RE = regexp.MustCompile("" +
 	"vcard|" +
 	"welcome_form|" +
 	"widget|" +
+	"moreNews|" +			// dnes.dir.bg
+	"newsUnder|" +			// dnes.dir.bg
+	"teaser|" + 			// dnes.dir.bg
+	"source|" +				// dnes.dir.bg
+	"panelss2|" +			// dnes.dir.bg
+	"tabsCity|" +			// dnes.dir.bg
+	"panesCity|" +			// dnes.dir.bg
+	"rightBlock|" +			// dnes.dir.bg
 	"wp-caption-text")
 var CAPTIONS_RE = regexp.MustCompile("^caption$")
 var GOOGLE_RE = regexp.MustCompile(" google ")
