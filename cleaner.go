@@ -115,6 +115,7 @@ var REMOVENODES_RE = regexp.MustCompile("" +
 	"rss|" +				// dnes.dir.bg
 	"_articles|" +			// dnes.dir.bg
 	"wp-caption-text")
+
 var CAPTIONS_RE = regexp.MustCompile("^caption$")
 var GOOGLE_RE = regexp.MustCompile(" google ")
 var MORE_RE = regexp.MustCompile("^[^entry-]more.*$")
