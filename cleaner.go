@@ -36,11 +36,13 @@ var REMOVENODES_RE = regexp.MustCompile("" +
 	"ajoutVideo|" +
 	"articleheadings|" +
 	"author-dropdown|" +
+	"author|" +
 	"blog-pager|" +
 	"breadcrumbs|" +
 	"breaking|" +
 	"box-right|" +
 	"box-left|" +
+	"^bar$|" +
 	"byline|" +
 	"cabecalho|" +
 	"cnnStryHghLght|" +
@@ -54,6 +56,7 @@ var REMOVENODES_RE = regexp.MustCompile("" +
 	"contact|" +
 	"contentTools2|" +
 	"controls|" +
+	"cookie|" +
 	"^date$|" +
 	"detail_new_|" +
 	"detail_related_|" +
@@ -70,6 +73,7 @@ var REMOVENODES_RE = regexp.MustCompile("" +
 	"links|" +
 	"mediaarticlerelated|" +
 	"menucontainer|" +
+	"menu|" +
 	"meta$|" +
 	"navbar|" +
 	"pagetools|" +
@@ -114,6 +118,7 @@ var REMOVENODES_RE = regexp.MustCompile("" +
 	"site_box|" +			// dnes.dir.bg
 	"rss|" +				// dnes.dir.bg
 	"_articles|" +			// dnes.dir.bg
+	//"photo_descr|" + 		// dnes.dir.bg
 	"wp-caption-text")
 
 var CAPTIONS_RE = regexp.MustCompile("^caption$")
