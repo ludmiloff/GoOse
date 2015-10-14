@@ -665,3 +665,37 @@ func (this *contentExtractor) postCleanup(targetNode *goquery.Selection) *goquer
 	})
 	return node
 }
+
+func (this *contentExtractor) ProcessAsHomePage(article *Article) {
+	article.CanonicalLink = this.getCanonicalLink(article)
+	article.Domain = this.getDomain(article)
+	article.Title = this.getTitle(article)
+	article.MetaFavicon = this.getFavicon(article)
+	article.MetaDescription = this.getMetaContentWithSelector(article, "meta[name#=(?i)description]")
+}
+
+func (this *contentExtractor) ProcessAsRegularPage(article *Article, cleanerConfig Configuration) {
+	article.CanonicalLink = this.getCanonicalLink(article)
+	article.Domain = this.getDomain(article)
+	article.Title = this.getTitle(article)
+	article.MetaFavicon = this.getFavicon(article)
+	article.MetaDescription = this.getMetaContentWithSelector(article, "meta[name#=(?i)description]")
+
+	cleaner := NewCleaner(cleanerConfig)
+	article.Doc = cleaner.clean(article)
+
+	article.TopImage = OpenGraphResolver(article)
+	if article.TopImage == "" {
+		article.TopImage = WebPageResolver(article)
+	}
+	article.TopNode = this.calculateBestNode(article)
+	if article.TopNode != nil {
+		article.TopNode = this.postCleanup(article.TopNode)
+
+		outputFormatter := new(outputFormatter)
+		article.CleanedText = outputFormatter.getFormattedText(article)
+
+		videoExtractor := NewVideoExtractor()
+		article.Movies = videoExtractor.GetVideos(article)
+	}
+}

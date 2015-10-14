@@ -44,7 +44,6 @@ var REMOVENODES_RE = regexp.MustCompile("" +
 	"box-left|" +
 	"^bar$|" +
 	"byline|" +
-	"cabecalho|" +
 	"cnnStryHghLght|" +
 	"cnn_html_slideshow|" +
 	"cnn_strycaptiontxt|" +
@@ -80,7 +79,6 @@ var REMOVENODES_RE = regexp.MustCompile("" +
 	"popup|" +
 	"post-attributes|" +
 	"post-title|" +
-	"relacionado|" +
 	"related|" +
 	"retweet|" +
 	"runaroundLeft|" +
