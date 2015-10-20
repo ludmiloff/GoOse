@@ -66,7 +66,7 @@ func (this Crawler) Crawl() (*Article, error) {
 				sr := strings.NewReader(this.rawHtml)
 				tr := transform.NewReader(sr, charmap.Windows1251.NewDecoder())
 				utf8, err := ioutil.ReadAll(tr)
-				if err != err {
+				if err != nil {
 					// обработка на грешките
 					this.rawHtml = ""
 				} else {

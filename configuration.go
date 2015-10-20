@@ -51,6 +51,7 @@ func GetDefualtConfiguration(args ...string) Configuration {
 		if err != nil {
 			panic(err.Error())
 		}
+
 		stopWordsPath := jsconfiguration.String("stopWordsPath", "resources/stopwords")
 		stopWords := NewStopwords() //TODO with path
 		return Configuration{

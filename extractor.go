@@ -671,17 +671,17 @@ func (this *contentExtractor) ProcessAsHomePage(article *Article) {
 	article.Domain = this.getDomain(article)
 	article.Title = this.getTitle(article)
 	article.MetaFavicon = this.getFavicon(article)
-	article.MetaDescription = this.getMetaContentWithSelector(article, "meta[name#=(?i)description]")
+	article.MetaDescription = this.getMetaContentWithSelector(article, "meta[name#=(?i)^description$]")
 }
 
-func (this *contentExtractor) ProcessAsRegularPage(article *Article, cleanerConfig Configuration) {
+func (this *contentExtractor) ProcessAsRegularPage(article *Article) {
 	article.CanonicalLink = this.getCanonicalLink(article)
 	article.Domain = this.getDomain(article)
 	article.Title = this.getTitle(article)
 	article.MetaFavicon = this.getFavicon(article)
-	article.MetaDescription = this.getMetaContentWithSelector(article, "meta[name#=(?i)description]")
+	article.MetaDescription = this.getMetaContentWithSelector(article, "meta[name#=(?i)^description$]")
 
-	cleaner := NewCleaner(cleanerConfig)
+	cleaner := NewCleaner(this.config)
 	article.Doc = cleaner.clean(article)
 
 	article.TopImage = OpenGraphResolver(article)
